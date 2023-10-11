@@ -5,7 +5,7 @@ buildscript {
 }
 
 plugins {
-    id "org.jetbrains.intellij" version "0.4.8"
+    id "org.jetbrains.intellij" version "1.10.1"
     id "de.undercouch.download" version "3.4.2"
 }
 
@@ -13,6 +13,9 @@ intellij {
     localPath = '.gradle/ide/clion-' + clionVersion
     pluginName = 'Conan'
     updateSinceUntilBuild = false // Disables updating since-build attribute in plugin.xml
+    type = 'CL'
+    version = clionVersion
+    setPlugins("com.intellij.clion", "com.intellij.cidr.base")
 }
 
 repositories {

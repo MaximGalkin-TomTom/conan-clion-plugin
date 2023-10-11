@@ -5,6 +5,9 @@ import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.ProcessAdapter;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.notification.NotificationType;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ModalityState;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
@@ -91,10 +94,13 @@ public class ConanCommandBase {
     public void run(Task task) {
         // The progress manager is only good for foreground threads.
         if (SwingUtilities.isEventDispatchThread()) {
-            ProgressManager.getInstance().run(task);
+            ApplicationManager.getApplication().runWriteAction(()->ProgressManager.getInstance().run(task));
+//            ApplicationManager.getApplication().invokeAndWait(() -> ProgressManager.getInstance().run(task), ModalityState.NON_MODAL);
+//            ProgressManager.getInstance().run(task);
         } else {
             // Run the scan task when the thread is in the foreground.
-            SwingUtilities.invokeLater(() -> ProgressManager.getInstance().run(task));
+            ApplicationManager.getApplication().invokeLater(() -> ProgressManager.getInstance().run(task), ModalityState.NON_MODAL);
+//            SwingUtilities.invokeLater(() -> ProgressManager.getInstance().run(task));
         }
     }
 
